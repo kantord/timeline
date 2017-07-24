@@ -20,15 +20,18 @@ class Plate extends Component {
             })
         }
 
-        console.log(days)
-
         if (this.props.items) {
             return (
                 <div className="plate">
                 <ul>
                     {Object.keys(days).sort().reverse().map((day, index) => {
-                        var formatted_date = new Date(day * 1) + "";
-                        return (<li key={day}>{formatted_date}
+                        var formatted_date = new Date(day * 1).toLocaleDateString()
+                        var anchors = null
+                        if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
+                            anchors = (<a id="today" />)
+                        }
+
+                        return (<li key={day}>{anchors}{formatted_date}
                             <ul>
                             {days[day].map((item) => {
                             if (item.status === "pending") {
