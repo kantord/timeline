@@ -28,7 +28,7 @@ class Day extends Component {
         return (<li key={this.props.day}>{anchors}{formatted_date}
             <ul>
             {this.props.items.map((item) => {
-                return (<Event item={item} onClick={that.props.onClick} />)
+                return (<Event key={item.uuid} item={item} onClick={that.props.onClick} />)
             })}
             </ul>
         </li>)
@@ -65,7 +65,7 @@ class DayList extends Component {
                 <ul>
                     {Object.keys(days).sort().reverse().map((day, index) => {
                         var date = new Date(day * 1)
-                        return (<Day day={day} date={date} items={days[day]} onClick={that.props.onClick} />)
+                        return (<Day key={day} day={day} date={date} items={days[day]} onClick={that.props.onClick} />)
                     })}
                 </ul>
                 </div>
@@ -85,7 +85,7 @@ class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-            "plate": null
+            "items": []
         };
 
         this.update()
@@ -96,7 +96,15 @@ class App extends Component {
             return response.json()
         }).then((json) => {
             this.setState({
-                "plate": json
+                "items": this.state.items.concat(json)
+            })
+        })
+
+        fetch("/journal.json").then((response) => {
+            return response.json()
+        }).then((json) => {
+            this.setState({
+                "items": this.state.items.concat(json)
             })
         })
     }
@@ -108,7 +116,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                <DayList items={this.state.plate} onClick={this.clickDayListItem} />
+                <DayList items={this.state.items} onClick={this.clickDayListItem} />
             </div>
         );
     }
