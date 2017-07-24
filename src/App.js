@@ -2,6 +2,20 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 
+class Event extends Component {
+    render() {
+        var that = this;
+
+        if (this.props.item.status === "pending") {
+            var button = (<button onClick={that.props.onClick.bind(null, this.props.item)}>Mark done</button>)
+        } else {
+            var button = null
+        }
+
+        return (<li key={this.props.item.uuid}>{this.props.item.description} {button}</li>)
+    }
+}
+
 class Day extends Component {
     render() {
         var that = this;
@@ -14,12 +28,7 @@ class Day extends Component {
         return (<li key={this.props.day}>{anchors}{formatted_date}
             <ul>
             {this.props.items.map((item) => {
-                if (item.status === "pending") {
-                    var button = (<button onClick={that.props.onClick.bind(null, item)}>Mark done</button>)
-                } else {
-                    var button = null
-                }
-                return (<li key={item.uuid}>{item.description} {button}</li>)
+                return (<Event item={item} onClick={that.props.onClick} />)
             })}
             </ul>
         </li>)
