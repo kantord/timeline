@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 
-class Plate extends Component {
+class DayList extends Component {
     organize_items(items) {
         var days = {}
         if (items !== null) {
@@ -84,14 +84,14 @@ class App extends Component {
         })
     }
 
-    clickPlateItem(item) {
+    clickDayListItem(item) {
         console.log(item)
     }
 
     render() {
         return (
             <div>
-                <Plate items={this.state.plate} onClick={this.clickPlateItem} />
+                <DayList items={this.state.plate} onClick={this.clickDayListItem} />
             </div>
         );
     }
