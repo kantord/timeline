@@ -2,6 +2,30 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 
+class Day extends Component {
+    render() {
+        var that = this;
+        var formatted_date = this.props.date.toLocaleDateString()
+        var anchors = null
+        if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
+            anchors = (<a id="today" />)
+        }
+
+        return (<li key={this.props.day}>{anchors}{formatted_date}
+            <ul>
+            {this.props.items.map((item) => {
+                if (item.status === "pending") {
+                    var button = (<button onClick={that.props.onClick.bind(null, item)}>Mark done</button>)
+                } else {
+                    var button = null
+                }
+                return (<li key={item.uuid}>{item.description} {button}</li>)
+            })}
+            </ul>
+        </li>)
+    }
+}
+
 class DayList extends Component {
     organize_items(items) {
         var days = {}
@@ -31,24 +55,8 @@ class DayList extends Component {
                 <div className="plate">
                 <ul>
                     {Object.keys(days).sort().reverse().map((day, index) => {
-                        var formatted_date = new Date(day * 1).toLocaleDateString()
-                        var anchors = null
-                        if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
-                            anchors = (<a id="today" />)
-                        }
-
-                        return (<li key={day}>{anchors}{formatted_date}
-                            <ul>
-                            {days[day].map((item) => {
-                            if (item.status === "pending") {
-                                var button = (<button onClick={that.props.onClick.bind(null, item)}>Mark done</button>)
-                            } else {
-                                var button = null
-                            }
-                            return (<li key={item.uuid}>{item.description} {button}</li>)
-                        })}
-                            </ul>
-                        </li>)
+                        var date = new Date(day * 1)
+                        return (<Day day={day} date={date} items={days[day]} onClick={that.props.onClick} />)
                     })}
                 </ul>
                 </div>
