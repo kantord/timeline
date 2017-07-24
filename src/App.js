@@ -3,11 +3,10 @@ import './App.css';
 import 'whatwg-fetch';
 
 class Plate extends Component {
-    render() {
-        var that = this;
+    organize_items(items) {
         var days = {}
-        if (this.props.items !== null) {
-            this.props.items.map((item) => {
+        if (items !== null) {
+            items.map((item) => {
                 var day
                 if (item.status === "pending") day = item.due
                 else if (item.status === "completed") day = item.modified
@@ -20,6 +19,13 @@ class Plate extends Component {
             })
         }
 
+        return days;
+    }
+
+    render() {
+        var that = this;
+        var days = this.organize_items(this.props.items)
+    
         if (this.props.items) {
             return (
                 <div className="plate">
