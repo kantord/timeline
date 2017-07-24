@@ -27,9 +27,7 @@ class Day extends Component {
 
         return (<li key={this.props.day}>{anchors}{formatted_date}
             <ul>
-            {this.props.items.map((item) => {
-                return (<Event key={item.uuid} item={item} onClick={that.props.onClick} />)
-            })}
+            {this.props.items}
             </ul>
         </li>)
     }
@@ -41,8 +39,8 @@ class DayList extends Component {
         if (items !== null) {
             items.map((item) => {
                 var day
-                if (item.status === "pending") day = item.due
-                else if (item.status === "completed") day = item.modified
+                if (item.props.status === "pending") day = item.props.due
+                else if (item.props.status === "completed") day = item.props.modified
                 else return
                 day = (day + "").substring(0, 8)
                 console.log(day)
@@ -96,15 +94,16 @@ class App extends Component {
             return response.json()
         }).then((json) => {
             this.setState({
-                "items": this.state.items.concat(json)
+                "items": this.state.items.concat(json.map((i) => {return new Event(i)}))
             })
+            console.log(this.state)
         })
 
         fetch("/journal.json").then((response) => {
             return response.json()
         }).then((json) => {
             this.setState({
-                "items": this.state.items.concat(json)
+                "items": this.state.items.concat([])  // FIXME
             })
         })
     }
