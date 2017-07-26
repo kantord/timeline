@@ -2,6 +2,24 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 
+
+function createTaskEvent(item) {
+    function extract_day(item) {
+        var day
+        if (item.status === "pending") day = item.due
+        else if (item.status === "completed") day = item.modified
+        else return
+        day = (day + "").substring(0, 8)
+        return new Date(day.substring(0,4), day.substring(4,6) - 1, day.substring(6,8) - 1).getTime() * 1
+    }
+
+    return {
+        "day": extract_day(item),
+        "visible": item.status === "pending" || item.status === "completed",
+        "item": React.createElement(Event, {"item": item})
+    }
+}
+
 class Event extends Component {
     render() {
         var that = this;
@@ -25,7 +43,6 @@ class Day extends Component {
             anchors = (<a id="today" />)
         }
 
-        console.log(this.props)
 
         var key = this.props.day;
 
@@ -38,23 +55,19 @@ class Day extends Component {
 
 class DayList extends Component {
     organize_items(items) {
+        console.log("Items to organize", items)
         var days = {}
         if (items !== null) {
             items.map((item) => {
-                var day
-                console.log(item)
-                if (item.props.item.status === "pending") day = item.props.item.due
-                else if (item.props.item.status === "completed") day = item.props.item.modified
-                else return
-                day = (day + "").substring(0, 8)
-                console.log(day)
-                day = new Date(day.substring(0,4), day.substring(4,6) - 1, day.substring(6,8) - 1).getTime() * 1
+                var day = item.day
                 if (!days.hasOwnProperty(day)) days[day] = [];
-                days[day].push(item)
+                days[day].push(item.item)
             })
         }
 
-        console.log(days)
+
+        console.log("Organized items", days)
+
         return days;
     }
 
@@ -99,9 +112,8 @@ class App extends Component {
             return response.json()
         }).then((json) => {
             this.setState({
-                "items": this.state.items.concat(json.map((i) => {return React.createElement(Event, {"item": i})}))
+                "items": this.state.items.concat(json.map(createTaskEvent).filter((i) => {return i.visible}))
             })
-            console.log(this.state)
         })
 
         //fetch("/journal.json").then((response) => {
@@ -114,7 +126,6 @@ class App extends Component {
     }
 
     clickDayListItem(item) {
-        console.log(item)
     }
 
     render() {
