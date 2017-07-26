@@ -7,7 +7,7 @@ class Event extends Component {
         var that = this;
 
         if (this.props.item.status === "pending") {
-            var button = (<button onClick={that.props.onClick.bind(null, this.props.item)}>Mark done</button>)
+            var button = (<button>Mark done</button>)
         } else {
             var button = null
         }
@@ -25,11 +25,14 @@ class Day extends Component {
             anchors = (<a id="today" />)
         }
 
-        return (<li key={this.props.day}>{anchors}{formatted_date}
-            <ul>
-            {this.props.items}
-            </ul>
-        </li>)
+        console.log(this.props)
+
+        var key = this.props.day;
+
+        return React.createElement("li", {"key": key}, [
+            (<p>{anchors}{formatted_date}</p>),
+            React.createElement("ul", null, this.props.items)
+        ])
     }
 }
 
@@ -39,8 +42,9 @@ class DayList extends Component {
         if (items !== null) {
             items.map((item) => {
                 var day
-                if (item.props.status === "pending") day = item.props.due
-                else if (item.props.status === "completed") day = item.props.modified
+                console.log(item)
+                if (item.props.item.status === "pending") day = item.props.item.due
+                else if (item.props.item.status === "completed") day = item.props.item.modified
                 else return
                 day = (day + "").substring(0, 8)
                 console.log(day)
@@ -50,6 +54,7 @@ class DayList extends Component {
             })
         }
 
+        console.log(days)
         return days;
     }
 
@@ -94,18 +99,18 @@ class App extends Component {
             return response.json()
         }).then((json) => {
             this.setState({
-                "items": this.state.items.concat(json.map((i) => {return new Event(i)}))
+                "items": this.state.items.concat(json.map((i) => {return React.createElement(Event, {"item": i})}))
             })
             console.log(this.state)
         })
 
-        fetch("/journal.json").then((response) => {
-            return response.json()
-        }).then((json) => {
-            this.setState({
-                "items": this.state.items.concat([])  // FIXME
-            })
-        })
+        //fetch("/journal.json").then((response) => {
+            //return response.json()
+        //}).then((json) => {
+            //this.setState({
+                //"items": this.state.items.concat([])  // FIXME
+            //})
+        //})
     }
 
     clickDayListItem(item) {
