@@ -9,14 +9,21 @@ function createTaskEvent(item) {
         if (item.status === "pending") day = item.due
         else if (item.status === "completed") day = item.modified
         else return
-        day = (day + "").substring(0, 8)
-        return new Date(day.substring(0,4), day.substring(4,6) - 1, day.substring(6,8) - 1).getTime() * 1
+        return new Date(
+            day.substring(0,4),
+            day.substring(4,6) - 1,
+            day.substring(6,8) - 1,
+            day.substring(9, 11),
+            day.substring(11, 13),
+            day.substring(13, 15)
+        ).getTime() * 1
     }
 
     return {
         "day": extract_day(item),
         "visible": item.status === "pending" || item.status === "completed",
-        "item": React.createElement(Event, {"item": item})
+        "item": React.createElement(Event, {"item": item, "day": extract_day(item)})
+
     }
 }
 
@@ -30,14 +37,15 @@ class Event extends Component {
             var button = null
         }
 
-        return (<li key={this.props.item.uuid}>{this.props.item.description} {button}</li>)
+        return (<li key={this.props.item.uuid}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
     }
 }
 
 class Day extends Component {
     render() {
         var that = this;
-        var formatted_date = this.props.date.toLocaleDateString()
+        console.log(this.props)
+        var formatted_date = new Date(this.props.day).toLocaleDateString();
         var anchors = null
         if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
             anchors = (<a id="today" />)
@@ -46,27 +54,32 @@ class Day extends Component {
 
         var key = this.props.day;
 
+        console.log(this.props)
+
+        var items = this.props.items.sort((i) => {
+            return new Date(i.day).getTime()
+        }).map((i) => {
+            return i.item
+        })
+
         return React.createElement("li", {"key": key}, [
             (<p>{anchors}{formatted_date}</p>),
-            React.createElement("ul", null, this.props.items)
+            React.createElement("ul", null, items)
         ])
     }
 }
 
 class DayList extends Component {
     organize_items(items) {
-        console.log("Items to organize", items)
         var days = {}
         if (items !== null) {
             items.map((item) => {
-                var day = item.day
+                var day = new Date(item.day * 1).toLocaleDateString();
+                console.log(new Date(day))
                 if (!days.hasOwnProperty(day)) days[day] = [];
-                days[day].push(item.item)
+                days[day].push(item)
             })
         }
-
-
-        console.log("Organized items", days)
 
         return days;
     }
@@ -81,7 +94,7 @@ class DayList extends Component {
                 <ul>
                     {Object.keys(days).sort().reverse().map((day, index) => {
                         var date = new Date(day * 1)
-                        return (<Day key={day} day={day} date={date} items={days[day]} onClick={that.props.onClick} />)
+                        return (<Day key={day} day={day} items={days[day]} onClick={that.props.onClick} />)
                     })}
                 </ul>
                 </div>
