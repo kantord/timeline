@@ -25,6 +25,11 @@ body {
 .DayList>li {
     margin-left: -4em;
     padding-left: 4em;
+    margin-bottom: 6em;
+}
+
+.DayList>li>ul>li {
+    margin-bottom: 2em;
 }
 
 .DayList>li>p {
