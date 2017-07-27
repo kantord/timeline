@@ -27,6 +27,25 @@ function createTaskEvent(item) {
     }
 }
 
+
+function createJournalEvent(item) {
+    function extract_day(item) {
+        return new Date(
+            item.date.substring(0,4),
+            item.date.substring(5,7) - 1,
+            item.date.substring(8,10) - 1,
+            item.time.substring(0, 2),
+            item.time.substring(3, 5),
+        ).getTime() * 1
+    }
+
+    return {
+        "day": extract_day(item),
+        "visible": true,
+        "item": React.createElement(JournalEvent, {"item": item, "day": extract_day(item)})
+    }
+}
+
 class TaskEvent extends Component {
     render() {
         var that = this;
@@ -38,6 +57,14 @@ class TaskEvent extends Component {
         }
 
         return (<li key={this.props.item.uuid}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
+    }
+}
+
+class JournalEvent extends Component {
+    render() {
+        var that = this;
+
+        return (<li key={this.props.day}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.title + " " + this.props.item.body} </li>)
     }
 }
 
@@ -129,13 +156,13 @@ class App extends Component {
             })
         })
 
-        //fetch("/journal.json").then((response) => {
-            //return response.json()
-        //}).then((json) => {
-            //this.setState({
-                //"items": this.state.items.concat([])  // FIXME
-            //})
-        //})
+        fetch("/journal.json").then((response) => {
+            return response.json()
+        }).then((json) => {
+            this.setState({
+                "items": this.state.items.concat(json.entries.map(createJournalEvent).filter((i) => {return i.visible}))
+            })
+        })
     }
 
     clickDayListItem(item) {
