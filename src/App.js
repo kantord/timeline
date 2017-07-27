@@ -65,14 +65,13 @@ class JournalEvent extends Component {
 }
 
 class Day extends Component {
+    is_today() {
+        return new Date(this.props.day).toLocaleDateString() === new Date(Date.now()).toLocaleDateString()
+    }
+
     render() {
         var formatted_date = new Date(this.props.day).toLocaleDateString();
-        var id = null
-        if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
-            id = "today"
-        }
-
-
+        var id = this.is_today() ? "today" : null;
         var key = this.props.day;
 
 
