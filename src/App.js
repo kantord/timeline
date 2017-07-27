@@ -71,7 +71,7 @@ class Day extends Component {
 
     render() {
         var date = new Date(this.props.day)
-        var formatted_date = (date.getYear() + 1900) + ". " + date.getMonth() + ". " + date.getDay() + "."
+        var formatted_date = (date.getYear() + 1900) + ". " + (date.getMonth() + 1) + ". " + date.getDate() + "."
         var id = this.is_today() ? "today" : null;
         var key = this.props.day;
 
@@ -111,7 +111,9 @@ class DayList extends Component {
     render_loaded(days) {
         return (
             <ul className="DayList">
-            {Object.keys(days).sort().reverse().map((day, index) => {
+            {Object.keys(days).sort((a, b) => {
+                return new Date(b).getTime() - new Date(a).getTime()
+            }).map((day, index) => {
                 return (<Day key={day} day={day} items={days[day]}  />)
             })}
             </ul>
