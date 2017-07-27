@@ -54,13 +54,13 @@ class TaskEvent extends BaseEvent {
             button = (<button>Mark done</button>)
         }
 
-        return (<li><p>{this.format_time(this.props.datetime)}</p>{this.props.item.description} {button}</li>)
+        return (<li><p>{this.format_time(this.props.datetime)}</p> <span className="source">Taskwarrior</span>{this.props.item.description} {button}</li>)
     }
 }
 
 class JournalEvent extends BaseEvent {
     render() {
-        return (<li><p>{this.format_time(this.props.datetime)}</p>{this.props.item.title + " " + this.props.item.body} </li>)
+        return (<li><p>{this.format_time(this.props.datetime)}</p> <span className="source">jrnl</span>{this.props.item.title + " " + this.props.item.body} </li>)
     }
 }
 

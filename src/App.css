@@ -41,3 +41,9 @@ body {
     font-size: 1.1em;
     font-weight: bold;
 }
+
+.DayList .source {
+    color: gray;
+    font-size: .7em;
+    margin: .3em;
+}
