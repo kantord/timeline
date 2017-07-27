@@ -67,9 +67,9 @@ class JournalEvent extends Component {
 class Day extends Component {
     render() {
         var formatted_date = new Date(this.props.day).toLocaleDateString();
-        var anchors = null
+        var id = null
         if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
-            anchors = (<a id="today" />)
+            id = "today"
         }
 
 
@@ -82,8 +82,8 @@ class Day extends Component {
             return i.item
         })
 
-        return React.createElement("li", {"key": key}, [
-            (<p key="2">{anchors}{formatted_date}</p>),
+        return React.createElement("li", {"key": key, "id": id}, [
+            (<p key="2">{formatted_date}</p>),
             React.createElement("ul", {"key": 1}, items)
         ])
     }
