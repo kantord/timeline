@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 import _ from 'underscore';
-
+import BaseEvent from './Event.js'
 
 function createTaskEvent(item) {
     function extract_datetime(item) {
@@ -47,18 +47,18 @@ function createJournalEvent(item) {
     }
 }
 
-class TaskEvent extends Component {
+class TaskEvent extends BaseEvent {
     render() {
         var button = null
         if (this.props.item.status === "pending") {
             button = (<button>Mark done</button>)
         }
 
-        return (<li><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
+        return (<li><p>{this.format_time(this.props.datetime)}</p>{this.props.item.description} {button}</li>)
     }
 }
 
-class JournalEvent extends Component {
+class JournalEvent extends BaseEvent {
     render() {
         return (<li><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.title + " " + this.props.item.body} </li>)
     }
@@ -70,7 +70,8 @@ class Day extends Component {
     }
 
     render() {
-        var formatted_date = new Date(this.props.day).toLocaleDateString();
+        var date = new Date(this.props.day)
+        var formatted_date = (date.getYear() + 1900) + ". " + date.getMonth() + ". " + date.getDay() + "."
         var id = this.is_today() ? "today" : null;
         var key = this.props.day;
 
