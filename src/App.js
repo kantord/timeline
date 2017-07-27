@@ -60,7 +60,7 @@ class TaskEvent extends BaseEvent {
 
 class JournalEvent extends BaseEvent {
     render() {
-        return (<li><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.title + " " + this.props.item.body} </li>)
+        return (<li><p>{this.format_time(this.props.datetime)}</p>{this.props.item.title + " " + this.props.item.body} </li>)
     }
 }
 
