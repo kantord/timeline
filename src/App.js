@@ -96,24 +96,35 @@ class DayList extends Component {
         })
     }
 
+    is_loaded() {
+        return this.props.items.length > 0
+    }
+
+    render_loading() {
+        return (
+            <div className="plate">
+            <p>Loading...</p>
+            </div>
+        )
+    }
+
+    render_loaded(days) {
+        return (
+            <ul className="DayList">
+            {Object.keys(days).sort().reverse().map((day, index) => {
+                return (<Day key={day} day={day} items={days[day]}  />)
+            })}
+            </ul>
+        )
+    }
+
     render() {
-        var that = this;
         var days = this.organize_items(this.props.items)
 
-        if (this.props.items) {
-            return (
-                <ul className="DayList">
-                    {Object.keys(days).sort().reverse().map((day, index) => {
-                        return (<Day key={day} day={day} items={days[day]} onClick={that.props.onClick} />)
-                    })}
-                </ul>
-            )
+        if (this.is_loaded()) {
+            return this.render_loaded(days)
         } else {
-            return (
-                <div className="plate">
-                    <p>Loading...</p>
-                </div>
-            )
+            return this.render_loading()
         }
     }
 }
