@@ -76,8 +76,8 @@ class Day extends Component {
         var key = this.props.day;
 
 
-        var items = this.props.items.sort((i) => {
-            return new Date(i.day).getTime()
+        var items = this.props.items.sort((a, b) => {
+            return b.datetime - a.datetime
         }).map((i) => {
             return i.item
         })
