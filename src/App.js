@@ -22,12 +22,12 @@ function createTaskEvent(item) {
     return {
         "day": extract_day(item),
         "visible": item.status === "pending" || item.status === "completed",
-        "item": React.createElement(Event, {"item": item, "day": extract_day(item)})
+        "item": React.createElement(TaskEvent, {"item": item, "day": extract_day(item)})
 
     }
 }
 
-class Event extends Component {
+class TaskEvent extends Component {
     render() {
         var that = this;
 
