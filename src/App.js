@@ -23,7 +23,7 @@ function createTaskEvent(item) {
     return {
         "datetime": extract_datetime(item),
         "visible": item.status === "pending" || item.status === "completed",
-        "item": React.createElement(TaskEvent, {"item": item, "datetime": extract_datetime(item)})
+        "item": React.createElement(TaskEvent, {"item": item, "datetime": extract_datetime(item), "key": item.uuid})
 
     }
 }
@@ -43,7 +43,7 @@ function createJournalEvent(item) {
     return {
         "datetime": extract_datetime(item),
         "visible": true,
-        "item": React.createElement(JournalEvent, {"item": item, "datetime": extract_datetime(item)})
+        "item": React.createElement(JournalEvent, {"item": item, "datetime": extract_datetime(item), "key": item.date + item.time + item.title + item.body})
     }
 }
 
@@ -54,13 +54,13 @@ class TaskEvent extends Component {
             button = (<button>Mark done</button>)
         }
 
-        return (<li key={this.props.item.uuid}><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
+        return (<li><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
     }
 }
 
 class JournalEvent extends Component {
     render() {
-        return (<li key={this.props.day}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.title + " " + this.props.item.body} </li>)
+        return (<li><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.title + " " + this.props.item.body} </li>)
     }
 }
 
@@ -83,8 +83,8 @@ class Day extends Component {
         })
 
         return React.createElement("li", {"key": key}, [
-            (<p>{anchors}{formatted_date}</p>),
-            React.createElement("ul", null, items)
+            (<p key="2">{anchors}{formatted_date}</p>),
+            React.createElement("ul", {"key": 1}, items)
         ])
     }
 }
