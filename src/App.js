@@ -102,13 +102,11 @@ class DayList extends Component {
 
         if (this.props.items) {
             return (
-                <div className="plate">
-                <ul>
+                <ul className="DayList">
                     {Object.keys(days).sort().reverse().map((day, index) => {
                         return (<Day key={day} day={day} items={days[day]} onClick={that.props.onClick} />)
                     })}
                 </ul>
-                </div>
             )
         } else {
             return (

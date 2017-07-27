@@ -1,4 +1,38 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
 #today {
-    border-bottom: 1px solid red;
-    display: block;
+    background: silver;
+}
+
+.DayList {
+    border-left: 2px dotted gray;
+    margin: 1em;
+    margin-left: 4em;
+}
+
+.DayList, .DayList ul {
+    list-style-type: none;
+}
+
+.DayList ul {
+    margin: 0;
+    padding: 0;
+}
+
+.DayList>li {
+    margin-left: -4em;
+    padding-left: 4em;
+}
+
+.DayList>li>p {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.DayList>li>ul>li>p {
+    font-size: 1.1em;
+    font-weight: bold;
 }
