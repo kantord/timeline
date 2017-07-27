@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
+import _ from 'underscore';
 
 
 function createTaskEvent(item) {
@@ -48,12 +49,9 @@ function createJournalEvent(item) {
 
 class TaskEvent extends Component {
     render() {
-        var that = this;
-
+        var button = null
         if (this.props.item.status === "pending") {
-            var button = (<button>Mark done</button>)
-        } else {
-            var button = null
+            button = (<button>Mark done</button>)
         }
 
         return (<li key={this.props.item.uuid}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
@@ -62,16 +60,12 @@ class TaskEvent extends Component {
 
 class JournalEvent extends Component {
     render() {
-        var that = this;
-
         return (<li key={this.props.day}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.title + " " + this.props.item.body} </li>)
     }
 }
 
 class Day extends Component {
     render() {
-        var that = this;
-        console.log(this.props)
         var formatted_date = new Date(this.props.day).toLocaleDateString();
         var anchors = null
         if (formatted_date === new Date(Date.now()).toLocaleDateString()) {
@@ -98,29 +92,22 @@ class Day extends Component {
 
 class DayList extends Component {
     organize_items(items) {
-        var days = {}
-        if (items !== null) {
-            items.map((item) => {
-                var day = new Date(item.day * 1).toLocaleDateString();
-                console.log(new Date(day))
-                if (!days.hasOwnProperty(day)) days[day] = [];
-                days[day].push(item)
-            })
-        }
-
-        return days;
+        return _.groupBy(items, (item) => {
+            return new Date(item.day * 1).toLocaleDateString()
+        })
     }
 
     render() {
         var that = this;
         var days = this.organize_items(this.props.items)
+
+        console.log(days)
     
         if (this.props.items) {
             return (
                 <div className="plate">
                 <ul>
                     {Object.keys(days).sort().reverse().map((day, index) => {
-                        var date = new Date(day * 1)
                         return (<Day key={day} day={day} items={days[day]} onClick={that.props.onClick} />)
                     })}
                 </ul>
@@ -163,9 +150,6 @@ class App extends Component {
                 "items": this.state.items.concat(json.entries.map(createJournalEvent).filter((i) => {return i.visible}))
             })
         })
-    }
-
-    clickDayListItem(item) {
     }
 
     render() {
