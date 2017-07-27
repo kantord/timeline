@@ -17,7 +17,7 @@ function createTaskEvent(item) {
             day.substring(9, 11),
             day.substring(11, 13),
             day.substring(13, 15)
-        ).getTime() * 1
+        ).getTime()
     }
 
     return {
@@ -37,7 +37,7 @@ function createJournalEvent(item) {
             item.date.substring(8,10) - 1,
             item.time.substring(0, 2),
             item.time.substring(3, 5),
-        ).getTime() * 1
+        ).getTime()
     }
 
     return {
@@ -92,7 +92,7 @@ class Day extends Component {
 class DayList extends Component {
     organize_items(items) {
         return _.groupBy(items, (item) => {
-            return new Date(item.datetime * 1).toLocaleDateString()
+            return new Date(item.datetime).toLocaleDateString()
         })
     }
 
