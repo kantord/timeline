@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 
 function createTaskEvent(item) {
-    function extract_day(item) {
+    function extract_datetime(item) {
         var day
         if (item.status === "pending") day = item.due
         else if (item.status === "completed") day = item.modified
@@ -21,16 +21,16 @@ function createTaskEvent(item) {
     }
 
     return {
-        "day": extract_day(item),
+        "datetime": extract_datetime(item),
         "visible": item.status === "pending" || item.status === "completed",
-        "item": React.createElement(TaskEvent, {"item": item, "day": extract_day(item)})
+        "item": React.createElement(TaskEvent, {"item": item, "datetime": extract_datetime(item)})
 
     }
 }
 
 
 function createJournalEvent(item) {
-    function extract_day(item) {
+    function extract_datetime(item) {
         return new Date(
             item.date.substring(0,4),
             item.date.substring(5,7) - 1,
@@ -41,9 +41,9 @@ function createJournalEvent(item) {
     }
 
     return {
-        "day": extract_day(item),
+        "datetime": extract_datetime(item),
         "visible": true,
-        "item": React.createElement(JournalEvent, {"item": item, "day": extract_day(item)})
+        "item": React.createElement(JournalEvent, {"item": item, "datetime": extract_datetime(item)})
     }
 }
 
@@ -54,7 +54,7 @@ class TaskEvent extends Component {
             button = (<button>Mark done</button>)
         }
 
-        return (<li key={this.props.item.uuid}><p>{new Date(this.props.day).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
+        return (<li key={this.props.item.uuid}><p>{new Date(this.props.datetime).toLocaleTimeString()}</p>{this.props.item.description} {button}</li>)
     }
 }
 
@@ -75,7 +75,6 @@ class Day extends Component {
 
         var key = this.props.day;
 
-        console.log(this.props)
 
         var items = this.props.items.sort((i) => {
             return new Date(i.day).getTime()
@@ -93,7 +92,7 @@ class Day extends Component {
 class DayList extends Component {
     organize_items(items) {
         return _.groupBy(items, (item) => {
-            return new Date(item.day * 1).toLocaleDateString()
+            return new Date(item.datetime * 1).toLocaleDateString()
         })
     }
 
@@ -101,8 +100,6 @@ class DayList extends Component {
         var that = this;
         var days = this.organize_items(this.props.items)
 
-        console.log(days)
-    
         if (this.props.items) {
             return (
                 <div className="plate">
