@@ -3,6 +3,7 @@ import './App.css';
 import 'whatwg-fetch';
 import _ from 'underscore';
 import BaseEvent from './Event.js'
+import Papa from 'papaparse'
 
 function createTaskEvent(item) {
     function extract_datetime(item) {
@@ -47,6 +48,33 @@ function createJournalEvent(item) {
     }
 }
 
+
+function createAccountingEvent(item) {
+    function extract_datetime(item) {
+        return new Date(
+            item.datetime.substring(0,4),
+            item.datetime.substring(5,7) - 1,
+            item.datetime.substring(8,10),
+        ).getTime()
+    }
+
+    var item = {
+        "payee": item[2],
+        "datetime": item[0]
+    }
+    
+
+    item.datetime = extract_datetime(item)
+
+    var key = item.payee + item.date + Math.random()  // FIXME
+
+    return {
+        "visible": true,
+        "datetime": item.datetime,
+        "item": React.createElement(AccountingEvent, {"item": item, "datetime": item.datetime, "key": key})
+    }
+}
+
 class TaskEvent extends BaseEvent {
     render() {
         var button = null
@@ -61,6 +89,12 @@ class TaskEvent extends BaseEvent {
 class JournalEvent extends BaseEvent {
     render() {
         return (<li><p>{this.format_time(this.props.datetime)}</p> <span className="source">jrnl</span>{this.props.item.title + " " + this.props.item.body} </li>)
+    }
+}
+
+class AccountingEvent extends BaseEvent {
+    render() {
+        return (<li><span className="source">ledger</span>{this.props.item.payee} </li>)
     }
 }
 
@@ -156,6 +190,27 @@ class App extends Component {
         }).then((json) => {
             this.setState({
                 "items": this.state.items.concat(json.entries.map(createJournalEvent).filter((i) => {return i.visible}))
+            })
+        })
+
+        fetch("/accounting.csv").then((response) => {
+            return response.text()
+        }).then((text) => {
+            var parsed = Papa.parse(text).data
+            parsed = _.groupBy(parsed, (item) => {return item[0]})
+
+            var items = _.flatten(Object.keys(parsed).map((key) => {
+                var transactions = _.groupBy(parsed[key], (item) => {
+                    return item[2]
+                })
+
+                return Object.keys(transactions).map((x) => {
+                    return [key, null, x]
+                })
+            }), true)
+
+            this.setState({
+                "items": this.state.items.concat(items.map(createAccountingEvent).filter((i) => {return i.visible}))
             })
         })
     }
