@@ -47,3 +47,11 @@ body {
     font-size: .7em;
     margin: .3em;
 }
+
+.amounts {
+    display: inline;
+}
+
+.amounts li {
+    display: inline;
+}

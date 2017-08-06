@@ -50,28 +50,41 @@ function createJournalEvent(item) {
 
 
 function createAccountingEvent(item) {
-    function extract_datetime(item) {
+    function extract_datetime(date_string) {
         return new Date(
-            item.datetime.substring(0,4),
-            item.datetime.substring(5,7) - 1,
-            item.datetime.substring(8,10),
+            date_string.substring(0,4),
+            date_string.substring(5,7) - 1,
+            date_string.substring(8,10),
         ).getTime()
     }
 
-    var item = {
-        "payee": item[2],
-        "datetime": item[0]
+    if (item[0] === undefined) {
+        return {"visible": false}
     }
+
+    if (item[2] === undefined) {
+        return {"visible": false}
+    }
+
+    var formatted_item = {
+        "payee": item[2],
+        "datetime": extract_datetime(item[0]),
+        "parts": item[3].map((x) => {
+            return {
+                "account": x[3],
+                "currency": x[4],
+                "amount": x[5] * 1,
+            }
+        })
+    }
+
     
-
-    item.datetime = extract_datetime(item)
-
-    var key = item.payee + item.date + Math.random()  // FIXME
+    var key = Math.random()
 
     return {
         "visible": true,
-        "datetime": item.datetime,
-        "item": React.createElement(AccountingEvent, {"item": item, "datetime": item.datetime, "key": key})
+        "datetime": formatted_item.datetime,
+        "item": React.createElement(AccountingEvent, {"item": formatted_item, "datetime": formatted_item.datetime, "key": key})
     }
 }
 
@@ -93,8 +106,24 @@ class JournalEvent extends BaseEvent {
 }
 
 class AccountingEvent extends BaseEvent {
+    get_totals() {
+         var groups = _.groupBy(
+            this.props.item.parts.filter((item) => {return item.amount > 0}),
+            (item) => {return item.currency}
+        )
+
+        return _.map(groups, (amounts, currency) => {return {
+            "currency": currency,
+            "amount": _.reduce(amounts, (a, b) => {
+                return a + b.amount
+            }, 0)
+        }})
+    }
+
     render() {
-        return (<li><span className="source">ledger</span>{this.props.item.payee} </li>)
+        return (<li><span className="source">ledger</span>{this.props.item.payee} <ul className="amounts">{this.get_totals().map((x) => {
+            return (<li key={x.currency}>{x.currency}{x.amount}</li>)
+        })}</ul> </li>)
     }
 }
 
@@ -205,7 +234,7 @@ class App extends Component {
                 })
 
                 return Object.keys(transactions).map((x) => {
-                    return [key, null, x]
+                    return [key, null, x, transactions[x]]
                 })
             }), true)
 
