@@ -95,13 +95,13 @@ class TaskEvent extends BaseEvent {
             button = (<button>Mark done</button>)
         }
 
-        return (<li><p>{this.format_time(this.props.datetime)}</p> <span className="source">Taskwarrior</span>{this.props.item.description} {button}</li>)
+        return (<li><p>{this.format_time(this.props.datetime)}</p> {this.props.item.description} {button} <span className="source">Taskwarrior</span></li>)
     }
 }
 
 class JournalEvent extends BaseEvent {
     render() {
-        return (<li><p>{this.format_time(this.props.datetime)}</p> <span className="source">jrnl</span>{this.props.item.title + " " + this.props.item.body} </li>)
+        return (<li><p>{this.format_time(this.props.datetime)}</p> {this.props.item.title + " " + this.props.item.body}  <span className="source">jrnl</span></li>)
     }
 }
 
@@ -121,9 +121,9 @@ class AccountingEvent extends BaseEvent {
     }
 
     render() {
-        return (<li><span className="source">ledger</span>{this.props.item.payee} <ul className="amounts">{this.get_totals().map((x) => {
+        return (<li>{this.props.item.payee} <ul className="amounts">{this.get_totals().map((x) => {
             return (<li key={x.currency}>{x.currency}{x.amount}</li>)
-        })}</ul> </li>)
+        })}</ul> <span className="source">ledger</span> </li>)
     }
 }
 

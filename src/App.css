@@ -29,7 +29,7 @@ body {
 }
 
 .DayList>li>ul>li {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 .DayList>li>p {
@@ -40,6 +40,17 @@ body {
 .DayList>li>ul>li>p {
     font-size: 1.1em;
     font-weight: bold;
+    display: inline;
+}
+
+.DayList>li>ul>li>p:before {
+    content: "";
+    display: block;
+    border-bottom: .1em solid black;
+    height: .5em;
+    width: 1em;
+    left: 3.25em;
+    position: absolute;
 }
 
 .DayList .source {
