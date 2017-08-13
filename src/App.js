@@ -2,130 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
 import _ from 'underscore';
-import BaseEvent from './Event.js'
 import Papa from 'papaparse'
-
-function createTaskEvent(item) {
-    function extract_datetime(item) {
-        var day
-        if (item.status === "pending") day = item.due
-        else if (item.status === "completed") day = item.modified
-        else return
-        return new Date(
-            day.substring(0,4),
-            day.substring(4,6) - 1,
-            day.substring(6,8) - 1,
-            day.substring(9, 11),
-            day.substring(11, 13),
-            day.substring(13, 15)
-        ).getTime()
-    }
-
-    return {
-        "datetime": extract_datetime(item),
-        "visible": item.status === "pending" || item.status === "completed",
-        "item": React.createElement(TaskEvent, {"item": item, "datetime": extract_datetime(item), "key": item.uuid})
-
-    }
-}
+import createTaskEvent from './taskwarrior.js'
+import createJournalEvent from './jrnl.js'
+import createAccountingEvent from './ledger.js'
 
 
-function createJournalEvent(item) {
-    function extract_datetime(item) {
-        return new Date(
-            item.date.substring(0,4),
-            item.date.substring(5,7) - 1,
-            item.date.substring(8,10) - 1,
-            item.time.substring(0, 2),
-            item.time.substring(3, 5),
-        ).getTime()
-    }
 
-    return {
-        "datetime": extract_datetime(item),
-        "visible": true,
-        "item": React.createElement(JournalEvent, {"item": item, "datetime": extract_datetime(item), "key": item.date + item.time + item.title + item.body})
-    }
-}
-
-
-function createAccountingEvent(item) {
-    function extract_datetime(date_string) {
-        return new Date(
-            date_string.substring(0,4),
-            date_string.substring(5,7) - 1,
-            date_string.substring(8,10),
-        ).getTime()
-    }
-
-    if (item[0] === undefined) {
-        return {"visible": false}
-    }
-
-    if (item[2] === undefined) {
-        return {"visible": false}
-    }
-
-    var formatted_item = {
-        "payee": item[2],
-        "datetime": extract_datetime(item[0]),
-        "parts": item[3].map((x) => {
-            return {
-                "account": x[3],
-                "currency": x[4],
-                "amount": x[5] * 1,
-            }
-        })
-    }
-
-    
-    var key = Math.random()
-
-    return {
-        "visible": true,
-        "datetime": formatted_item.datetime,
-        "item": React.createElement(AccountingEvent, {"item": formatted_item, "datetime": formatted_item.datetime, "key": key})
-    }
-}
-
-class TaskEvent extends BaseEvent {
-    render() {
-        var button = null
-        if (this.props.item.status === "pending") {
-            button = (<button>Mark done</button>)
-        }
-
-        return (<li><p>{this.format_time(this.props.datetime)}</p> {this.props.item.description} {button} <span className="source">Taskwarrior</span></li>)
-    }
-}
-
-class JournalEvent extends BaseEvent {
-    render() {
-        return (<li><p>{this.format_time(this.props.datetime)}</p> {this.props.item.title + " " + this.props.item.body}  <span className="source">jrnl</span></li>)
-    }
-}
-
-class AccountingEvent extends BaseEvent {
-    get_totals() {
-         var groups = _.groupBy(
-            this.props.item.parts.filter((item) => {return item.amount > 0}),
-            (item) => {return item.currency}
-        )
-
-        return _.map(groups, (amounts, currency) => {return {
-            "currency": currency,
-            "amount": _.reduce(amounts, (a, b) => {
-                return a + b.amount
-            }, 0)
-        }})
-    }
-
-    render() {
-        return (<li>{this.props.item.payee} <ul className="amounts">{this.get_totals().map((x) => {
-            return (<li key={x.currency}>{x.currency}{x.amount}</li>)
-        })}</ul> <span className="source">ledger</span> </li>)
-    }
-}
 
 class Day extends Component {
     is_today() {
