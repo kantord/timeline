@@ -22,10 +22,8 @@ function createJournalEvent(item) {
 
 class JournalEvent extends BaseEvent {
     render() {
-        return (<li><p>{this.format_time(this.props.datetime)}</p> {this.props.item.title + " " + this.props.item.body}  <span className="source">jrnl</span></li>)
+        return (<li style={{"border-left-color": "#ed0345"}}><p>{this.format_time(this.props.datetime)}</p> {this.props.item.title + " " + this.props.item.body}  <span className="source">jrnl</span></li>)
     }
 }
-
-
 
 export default createJournalEvent

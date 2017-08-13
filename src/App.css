@@ -30,6 +30,8 @@ body {
 
 .DayList>li>ul>li {
     margin-bottom: 1em;
+    border-left: 3px solid silver;
+    padding-left: 5px;
 }
 
 .DayList>li>p {

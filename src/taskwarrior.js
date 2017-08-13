@@ -32,9 +32,8 @@ class TaskEvent extends BaseEvent {
             button = (<button>Mark done</button>)
         }
 
-        return (<li><p>{this.format_time(this.props.datetime)}</p> {this.props.item.description} {button} <span className="source">Taskwarrior</span></li>)
+        return (<li style={{"border-left-color": "#01545a"}}><p>{this.format_time(this.props.datetime)}</p> {this.props.item.description} {button} <span className="source">Taskwarrior</span></li>)
     }
 }
-
 
 export default createTaskEvent
