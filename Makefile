@@ -1,3 +1,6 @@
+all: ./public/journal.json ./public/accounting.csv ./public/plate.json
+
+
 ./public/journal.json: ~/journal.txt
 	jrnl --export json	> $@
 
