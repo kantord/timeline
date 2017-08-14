@@ -22,3 +22,6 @@ yarn-error.log*
 /public/journal.json
 /public/plate.json
 /public/accounting.csv
+/public/instagram.url
+/instagram.url
+/public/instagram.json

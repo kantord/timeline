@@ -6,6 +6,7 @@ import Papa from 'papaparse'
 import createTaskEvent from './taskwarrior.js'
 import createJournalEvent from './jrnl.js'
 import createAccountingEvent from './ledger.js'
+import createInstagramEvent from './instagram.js'
 
 
 
@@ -124,6 +125,16 @@ class App extends Component {
             this.setState({
                 "items": this.state.items.concat(items.map(createAccountingEvent).filter((i) => {return i.visible}))
             })
+        })
+
+        fetch("/instagram.json").then((response) => {
+            return response.json()
+        }).then((json) => {
+            var items = json.data
+            this.setState({
+                "items": this.state.items.concat(items.map(createInstagramEvent).filter((i) => {return i.visible}))
+            })
+
         })
     }
 

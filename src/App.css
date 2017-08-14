@@ -43,6 +43,7 @@ body {
     font-size: 1.1em;
     font-weight: bold;
     display: inline;
+    vertical-align: top;
 }
 
 .DayList>li>ul>li>p:before {
@@ -67,4 +68,10 @@ body {
 
 .amounts li {
     display: inline;
+}
+
+img.pic {
+    width: 10em;
+    height: auto;
+    margin: 1em;
 }

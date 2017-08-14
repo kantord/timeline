@@ -9,3 +9,6 @@ all: ./public/journal.json ./public/accounting.csv ./public/plate.json
 
 ./public/plate.json: ~/.task
 	echo "[" `task export` "]" > $@
+
+./public/instagram.json: instagram.url
+	cat $^ | xargs -L 1 curl -o $@
