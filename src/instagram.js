@@ -16,7 +16,7 @@ function createInstagramEvent(item) {
 
 class InstagramEvent extends BaseEvent {
     render() {
-        return (<li style={{"border-left-color": "#ed0345"}}><p>{this.format_time(this.props.datetime)}</p> <img className="pic" src={this.props.item.images.low_resolution.url} />  <span className="source">instagram</span></li>)
+        return (<li style={{"border-left-color": "#8a3ab9"}}><p>{this.format_time(this.props.datetime)}</p> <img className="pic" src={this.props.item.images.low_resolution.url} />  <span className="source">instagram</span></li>)
     }
 }
 
