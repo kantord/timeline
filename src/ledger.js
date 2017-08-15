@@ -50,6 +50,8 @@ class AccountingEvent extends BaseEvent {
             (item) => {return item.currency}
         )
 
+
+
         return _.map(groups, (amounts, currency) => {return {
             "currency": currency,
             "amount": _.reduce(amounts, (a, b) => {
@@ -59,8 +61,20 @@ class AccountingEvent extends BaseEvent {
     }
 
     render() {
+        var round = (x) => {
+            return Math.round(x * 100) / 100
+        }
+
+        var cformat = {
+            "Ft": (x) => {return round(x) + " Ft"},
+            "EUR": (x) => {return "€" + round(x)},
+            "$": (x) => {return "$" + round(x)},
+            "AudibleCredit": (x) => {return round(x) + " Audible credit"},
+        }
+
+
         return (<li style={{"border-left-color": "#03c383"}}>{this.props.item.payee} <ul className="amounts">{this.get_totals().map((x) => {
-            return (<li key={x.currency}>{x.currency}{x.amount}</li>)
+            return (<li key={x.currency}>{cformat[x.currency](x.amount)}</li>)
         })}</ul> <span className="source">ledger</span> </li>)
     }
 }
