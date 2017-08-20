@@ -7,7 +7,7 @@ function createJournalEvent(item) {
         return new Date(
             item.date.substring(0,4),
             item.date.substring(5,7) - 1,
-            item.date.substring(8,10) - 1,
+            item.date.substring(8,10),
             item.time.substring(0, 2),
             item.time.substring(3, 5),
         ).getTime()
