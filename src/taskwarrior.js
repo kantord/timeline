@@ -10,7 +10,7 @@ function createTaskEvent(item) {
         return new Date(
             day.substring(0,4),
             day.substring(4,6) - 1,
-            day.substring(6,8) - 1,
+            day.substring(6,8),
             day.substring(9, 11),
             day.substring(11, 13),
             day.substring(13, 15)
