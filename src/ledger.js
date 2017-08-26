@@ -74,7 +74,7 @@ class AccountingEvent extends BaseEvent {
 
 
         return (<li style={{"border-left-color": "#03c383"}}>{this.props.item.payee} <ul className="amounts">{this.get_totals().map((x) => {
-            return (<li key={x.currency}>{cformat[x.currency](x.amount)}</li>)
+            return (<li key={x.currency}>{cformat[x.currency.trim()](x.amount)}</li>)
         })}</ul> <span className="source">ledger</span> </li>)
     }
 }
