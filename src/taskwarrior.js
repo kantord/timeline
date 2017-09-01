@@ -6,7 +6,10 @@ function createTaskEvent(item) {
         var day
         if (item.status === "pending") day = item.due
         else if (item.status === "completed") day = item.modified
-        else return
+        else return;
+
+        if (day === undefined) return undefined;
+
         return new Date(
             day.substring(0,4),
             day.substring(4,6) - 1,
